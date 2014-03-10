@@ -5,23 +5,25 @@ function place2Windows() {
     var screen = currentWindow.screen();
     var secondWindow = null;
     var numberOfWindowOnCurrentScreen = 1;
-    var windowsArray = new array();
+    var windowsArray = new Array();
     slate.eachApp(function(app) {
         app.eachWindow(function(window) {
-            if (window != currentWindow && window.screen().id() == screen.id()) {
+            if (window != currentWindow && window.screen().id() === screen.id()) {
                 secondWindow = window;
                 numberOfWindowOnCurrentScreen += 1;
-                windowsArray[] = window;
+//                windowsArray.push(window.title() + "___" + window.screen().id() + "_______" + screen.id());
+                windowsArray.push(window.title()+" "+window.pid() + "__" + currentWindow.title()+" "+currentWindow.pid());
             }
         });
     });
     if (secondWindow == null) {
+        slate.log("Mon slate js est mort");
         return;
     }
-    for(var win in windowsArray) {
-        slate.log(win.title());
+    for(var i = 0; i <  windowsArray.length; i++) {
+        slate.log(windowsArray[i]);
     }
-    slate.log("n = " + numberOfWindowOnCurrentScreen + " 1 : " + secondWindow.title() + "2 : " + currentWindow.title());
+    slate.log("n = " + numberOfWindowOnCurrentScreen + " 1 : " + currentWindow.title() + " 2 : " + secondWindow.title());
     // Perform appropriate action.
     var screenOriginX = screen.visibleRect().x;
     var screenOriginY = screen.visibleRect().y;
@@ -92,16 +94,23 @@ function swapWindows() {
     // Find another window in same screen.
     var screen = currentWindow.screen();
     var secondWindow = null;
+    var windowsArray = new Array();
     slate.eachApp(function(app) {
         app.eachWindow(function(window) {
-            if (window.screen().id() == screen.id()) {
+            if (window != currentWindow && window.screen().id() == screen.id()) {
                 secondWindow = window;
+                windowsArray.push(window.title());
             }
         });
     });
     if (secondWindow == null) {
+        slate.log("mon js slate est mort");
         return;
     }
+    for (var win in windowsArray) {
+        slate.log(win);
+    }
+    slate.log("1: " + currentWindow.title() + " 2: " + secondWindow.title());
     // Perform appropriate action.
     var secondWindowOriginX = secondWindow.rect().x;
     var secondWindowOriginY = secondWindow.rect().y;
@@ -270,6 +279,11 @@ function adjustWindowsSizes() {
     }
 }
 
+function logMe() {
+    slate.log("it's me a log");
+}
+
+slate.bind("b:ctrl;cmd", logMe);
 slate.bind("o:ctrl;cmd", place2Windows);
 slate.bind("i:ctrl;cmd", swapWindows);
 slate.bind("p:ctrl;cmd", adjustWindowsSizes);
