@@ -31,6 +31,14 @@ function place2Windows() {
     if (secondWindow == null) {
         return;
     }
+    slate.log([secondWindow.title(),
+               secondWindow.screen().id(),
+               secondWindow.app().name(),
+               secondWindow.rect().x,
+               secondWindow.rect().y,
+               secondWindow.rect().width,
+               secondWindow.rect().height,
+              ]);
     // Perform appropriate action.
     var screenOriginX = screen.visibleRect().x;
     var screenOriginY = screen.visibleRect().y;
@@ -108,9 +116,10 @@ function swapWindows() {
     var windowsArray = new Array();
     slate.eachApp(function(app) {
         app.eachWindow(function(window) {
-            if (window != currentWindow && window.screen().id() == screen.id()) {
-                secondWindow = window;
-                windowsArray.push(window.title());
+            if (window != undefined && window.title() != "" && window.screen().id() === screen.id()) {
+                numberOfTreatedWindowsOnCurrentScreen += 1;
+                if (numberOfTreatedWindowsOnCurrentScreen == 2)
+                    secondWindow = window;
             }
         });
     });
@@ -160,8 +169,10 @@ function adjustWindowsSizes() {
     var secondWindow = null;
     slate.eachApp(function(app) {
         app.eachWindow(function(window) {
-            if (window.screen().id() == screen.id()) {
-                secondWindow = window;
+            if (window != undefined && window.title() != "" && window.screen().id() === screen.id()) {
+                numberOfTreatedWindowsOnCurrentScreen += 1;
+                if (numberOfTreatedWindowsOnCurrentScreen == 2)
+                    secondWindow = window;
             }
         });
     });
