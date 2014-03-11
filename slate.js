@@ -18,7 +18,6 @@ function place2Windows() {
     var screen = currentWindow.screen();
     var secondWindow = null;
     var numberOfTreatedWindowsOnCurrentScreen = 0;
-    var windowsArray = new Array();
     slate.eachApp(function(app) {
         app.eachWindow(function(window) {
             if (window != undefined && window.title() != "" && window.screen().id() === screen.id()) {
@@ -31,6 +30,14 @@ function place2Windows() {
     if (secondWindow == null) {
         return;
     }
+    slate.log([currentWindow.title(),
+               currentWindow.screen().id(),
+               currentWindow.app().name(),
+               currentWindow.rect().x,
+               currentWindow.rect().y,
+               currentWindow.rect().width,
+               currentWindow.rect().height,
+              ]);
     slate.log([secondWindow.title(),
                secondWindow.screen().id(),
                secondWindow.app().name(),
@@ -39,6 +46,7 @@ function place2Windows() {
                secondWindow.rect().width,
                secondWindow.rect().height,
               ]);
+
     // Perform appropriate action.
     var screenOriginX = screen.visibleRect().x;
     var screenOriginY = screen.visibleRect().y;
@@ -113,7 +121,7 @@ function swapWindows() {
     // Find another window in same screen.
     var screen = currentWindow.screen();
     var secondWindow = null;
-    var windowsArray = new Array();
+    var numberOfTreatedWindowsOnCurrentScreen = 0;
     slate.eachApp(function(app) {
         app.eachWindow(function(window) {
             if (window != undefined && window.title() != "" && window.screen().id() === screen.id()) {
@@ -127,10 +135,23 @@ function swapWindows() {
         slate.log("mon js slate est mort");
         return;
     }
-    for (var win in windowsArray) {
-        slate.log(win);
-    }
-    slate.log("1: " + currentWindow.title() + " 2: " + secondWindow.title());
+    slate.log([currentWindow.title(),
+               currentWindow.screen().id(),
+               currentWindow.app().name(),
+               currentWindow.rect().x,
+               currentWindow.rect().y,
+               currentWindow.rect().width,
+               currentWindow.rect().height,
+              ]);
+    slate.log([secondWindow.title(),
+               secondWindow.screen().id(),
+               secondWindow.app().name(),
+               secondWindow.rect().x,
+               secondWindow.rect().y,
+               secondWindow.rect().width,
+               secondWindow.rect().height,
+              ]);
+
     // Perform appropriate action.
     var secondWindowOriginX = secondWindow.rect().x;
     var secondWindowOriginY = secondWindow.rect().y;
@@ -167,6 +188,7 @@ function adjustWindowsSizes() {
     // Find another window in same screen.
     var screen = currentWindow.screen();
     var secondWindow = null;
+    var numberOfTreatedWindowsOnCurrentScreen = 0;
     slate.eachApp(function(app) {
         app.eachWindow(function(window) {
             if (window != undefined && window.title() != "" && window.screen().id() === screen.id()) {
@@ -179,6 +201,7 @@ function adjustWindowsSizes() {
     if (secondWindow == null) {
         return;
     }
+
     // Make sure current window is top or left
     var screenOriginX = screen.visibleRect().x;
     var screenOriginY = screen.visibleRect().y;
@@ -220,7 +243,8 @@ function adjustWindowsSizes() {
             });
         } else if (Math.abs(currentWindow.rect().width - 2*screenSizeX/3) < 1 &&
                    Math.abs(secondWindow.rect().x - (screenOriginX + 2*screenSizeX/3)) < 1 &&
-                   Math.abs(secondWindow.rect().width - screenSizeX/3) < 1) {
+                   secondWindow.rect().width - screenSizeX/3 < 40 &&
+                   screenSizeX/3 - secondWindow.rect().width < 1) {
             // Make left window narrower
             secondWindow.doOperation("move", {
                 "x" : screenOriginX + screenSizeX/3,
@@ -234,7 +258,8 @@ function adjustWindowsSizes() {
                 "width" : screenSizeX/3,
                 "height" : screenSizeY
             });
-        } else if (Math.abs(currentWindow.rect().width - screenSizeX/3) < 1 &&
+        } else if (currentWindow.rect().width - screenSizeX/3 < 40 &&
+                   screenSizeX/3 - currentWindow.rect().width < 1 &&
                    Math.abs(secondWindow.rect().x - (screenOriginX + screenSizeX/3)) < 1 &&
                    Math.abs(secondWindow.rect().width - 2*screenSizeX/3) < 1) {
             // Make two windows equally wide
@@ -251,6 +276,7 @@ function adjustWindowsSizes() {
                 "height" : screenSizeY
             });
         }
+
     } else if (currentWindow.rect().width == screenSizeX &&
                secondWindow.rect().width == screenSizeX &&
                secondWindow.rect().x == screenOriginX) {
@@ -272,7 +298,8 @@ function adjustWindowsSizes() {
             });
         } else if (Math.abs(currentWindow.rect().height - 2*screenSizeY/3) < 1 &&
                    Math.abs(secondWindow.rect().y - (screenOriginY + 2*screenSizeY/3)) < 1 &&
-                   Math.abs(secondWindow.rect().height - screenSizeY/3) < 1) {
+                   secondWindow.rect().height - screenSizeY/3 < 40 &&
+                   screenSizeY/3 - secondWindow.rect().height < 1) {
             // Make top window shorter
             secondWindow.doOperation("move", {
                 "x" : screenOriginX,
@@ -286,7 +313,8 @@ function adjustWindowsSizes() {
                 "width" : screenSizeX,
                 "height" : screenSizeY/3
             });
-        } else if (Math.abs(currentWindow.rect().height - screenSizeY/3) < 1 &&
+        } else if (currentWindow.rect().height - screenSizeY/3 < 40 &&
+                   screenSizeY/3 - currentWindow.rect().height < 1 &&
                    Math.abs(secondWindow.rect().y - (screenOriginY + screenSizeY/3)) < 1 &&
                    Math.abs(secondWindow.rect().height - 2*screenSizeY/3) < 1) {
             // Make two windows equally tall
