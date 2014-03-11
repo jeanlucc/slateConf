@@ -1,8 +1,16 @@
-/* This file uses experemental results so it may not fonction
+/* This file uses experimental results so it may not fonction
  * properly. If you find a way to compare two windows instead of
  * suppose an order in the eachApp() and eachWindow() methods please
  * let me know: jean.luc.colombier@gmail.com */
 
+/* Changes the diposition of two windows of the current monitor. The
+ * current window is the first window and the second is undefined thus
+ * it should not be used if there are more than two windows on the
+ * current monitor. However it might work in a good way. The three
+ * possible dispositions are: two full screen windows, side-by-side
+ * and top-bottom.
+ *
+ * Note: it does not work if the window has no name. */
 function place2Windows() {
     // Get current window
     var currentWindow = slate.window();
@@ -87,6 +95,10 @@ function place2Windows() {
     }
 }
 
+/* Inverts the position of two windows of the current monitor. The
+ * current window is the first window and the second is undefined thus
+ * it should not be used if there are more than two windows on the
+ * current monitor. However it might work in a good way. */
 function swapWindows() {
     // Get current window
     var currentWindow = slate.window();
@@ -129,6 +141,17 @@ function swapWindows() {
     });
 }
 
+/* Changes the size of two windows in a particular configuration. The
+ * current window is the first window and the second is undefined thus
+ * it should not be used if there are more than two windows on the
+ * current monitor. However it might work in a good way. There are six
+ * possible configurations divided in two groups, the windows can be
+ * side-by-side or top-bottom. For each group the three possibilities
+ * are the two windows occupies a half screen, the first (left or top)
+ * window occupies one third of the screeen and the other window
+ * occupies the other two-thirds or the opposit (first two-thirds,
+ * second a third).
+*/
 function adjustWindowsSizes() {
     // Get current window
     var currentWindow = slate.window();
