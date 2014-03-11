@@ -1,29 +1,28 @@
+/* This file uses experemental results so it may not fonction
+ * properly. If you find a way to compare two windows instead of
+ * suppose an order in the eachApp() and eachWindow() methods please
+ * let me know: jean.luc.colombier@gmail.com */
+
 function place2Windows() {
     // Get current window
     var currentWindow = slate.window();
     // Find another window in same screen.
     var screen = currentWindow.screen();
     var secondWindow = null;
-    var numberOfWindowOnCurrentScreen = 1;
+    var numberOfTreatedWindowsOnCurrentScreen = 0;
     var windowsArray = new Array();
     slate.eachApp(function(app) {
         app.eachWindow(function(window) {
-            if (window != currentWindow && window.screen().id() === screen.id()) {
-                secondWindow = window;
-                numberOfWindowOnCurrentScreen += 1;
-//                windowsArray.push(window.title() + "___" + window.screen().id() + "_______" + screen.id());
-                windowsArray.push(window.title()+" "+window.pid() + "__" + currentWindow.title()+" "+currentWindow.pid());
+            if (window != undefined && window.title() != "" && window.screen().id() === screen.id()) {
+                numberOfTreatedWindowsOnCurrentScreen += 1;
+                if (numberOfTreatedWindowsOnCurrentScreen == 2)
+                    secondWindow = window;
             }
         });
     });
     if (secondWindow == null) {
-        slate.log("Mon slate js est mort");
         return;
     }
-    for(var i = 0; i <  windowsArray.length; i++) {
-        slate.log(windowsArray[i]);
-    }
-    slate.log("n = " + numberOfWindowOnCurrentScreen + " 1 : " + currentWindow.title() + " 2 : " + secondWindow.title());
     // Perform appropriate action.
     var screenOriginX = screen.visibleRect().x;
     var screenOriginY = screen.visibleRect().y;
@@ -280,7 +279,40 @@ function adjustWindowsSizes() {
 }
 
 function logMe() {
-    slate.log("it's me a log");
+    // Get current window
+    var currentWindow = slate.window();
+    // Find another window in same screen.
+    var screen = currentWindow.screen();
+    var secondWindow = null;
+    var numberOfWindowOnCurrentScreen = 0;
+    var windowsArray = new Array();
+    slate.eachApp(function(app) {
+        app.eachWindow(function(window) {
+            if (window != undefined && window.title() != "" && window.screen().id() === screen.id()) {
+                numberOfWindowOnCurrentScreen += 1;
+                secondWindow = window;
+
+                windowsArray.push(
+                    [window.title(),
+                     window.screen().id(),
+                     window.app().name(),
+                     window.rect().x,
+                     window.rect().y,
+                     window.rect().width,
+                     window.rect().height,
+                    ]
+                );
+            }
+        });
+    });
+    if (secondWindow == null) {
+        slate.log("Mon slate js est mort");
+        return;
+    }
+    for(var i = 0; i < windowsArray.length; i++) {
+        slate.log(windowsArray[i]);
+    }
+    slate.log("n = " + numberOfWindowOnCurrentScreen + " 1 : " + currentWindow.title() + " 2 : " + secondWindow.title());
 }
 
 slate.bind("b:ctrl;cmd", logMe);
