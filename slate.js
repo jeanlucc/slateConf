@@ -30,22 +30,22 @@ function place2Windows() {
     if (secondWindow == null) {
         return;
     }
-    slate.log([currentWindow.title(),
-               currentWindow.screen().id(),
-               currentWindow.app().name(),
-               currentWindow.rect().x,
-               currentWindow.rect().y,
-               currentWindow.rect().width,
-               currentWindow.rect().height,
-              ]);
-    slate.log([secondWindow.title(),
-               secondWindow.screen().id(),
-               secondWindow.app().name(),
-               secondWindow.rect().x,
-               secondWindow.rect().y,
-               secondWindow.rect().width,
-               secondWindow.rect().height,
-              ]);
+    // slate.log([currentWindow.title(),
+    //            currentWindow.screen().id(),
+    //            currentWindow.app().name(),
+    //            currentWindow.rect().x,
+    //            currentWindow.rect().y,
+    //            currentWindow.rect().width,
+    //            currentWindow.rect().height,
+    //           ]);
+    // slate.log([secondWindow.title(),
+    //            secondWindow.screen().id(),
+    //            secondWindow.app().name(),
+    //            secondWindow.rect().x,
+    //            secondWindow.rect().y,
+    //            secondWindow.rect().width,
+    //            secondWindow.rect().height,
+    //           ]);
 
     // Perform appropriate action.
     var screenOriginX = screen.visibleRect().x;
@@ -132,25 +132,24 @@ function swapWindows() {
         });
     });
     if (secondWindow == null) {
-        slate.log("mon js slate est mort");
         return;
     }
-    slate.log([currentWindow.title(),
-               currentWindow.screen().id(),
-               currentWindow.app().name(),
-               currentWindow.rect().x,
-               currentWindow.rect().y,
-               currentWindow.rect().width,
-               currentWindow.rect().height,
-              ]);
-    slate.log([secondWindow.title(),
-               secondWindow.screen().id(),
-               secondWindow.app().name(),
-               secondWindow.rect().x,
-               secondWindow.rect().y,
-               secondWindow.rect().width,
-               secondWindow.rect().height,
-              ]);
+    // slate.log([currentWindow.title(),
+    //            currentWindow.screen().id(),
+    //            currentWindow.app().name(),
+    //            currentWindow.rect().x,
+    //            currentWindow.rect().y,
+    //            currentWindow.rect().width,
+    //            currentWindow.rect().height,
+    //           ]);
+    // slate.log([secondWindow.title(),
+    //            secondWindow.screen().id(),
+    //            secondWindow.app().name(),
+    //            secondWindow.rect().x,
+    //            secondWindow.rect().y,
+    //            secondWindow.rect().width,
+    //            secondWindow.rect().height,
+    //           ]);
 
     // Perform appropriate action.
     var secondWindowOriginX = secondWindow.rect().x;
@@ -368,7 +367,6 @@ function logMe() {
         });
     });
     if (secondWindow == null) {
-        slate.log("Mon slate js est mort");
         return;
     }
     for(var i = 0; i < windowsArray.length; i++) {
@@ -377,7 +375,7 @@ function logMe() {
     slate.log("n = " + numberOfWindowOnCurrentScreen + " 1 : " + currentWindow.title() + " 2 : " + secondWindow.title());
 }
 
-slate.bind("b:ctrl;cmd", logMe);
+//slate.bind("b:ctrl;cmd", logMe);
 slate.bind("o:ctrl;cmd", place2Windows);
 slate.bind("i:ctrl;cmd", swapWindows);
 slate.bind("p:ctrl;cmd", adjustWindowsSizes);
