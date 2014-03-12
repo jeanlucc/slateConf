@@ -30,6 +30,7 @@ function place2Windows() {
     if (secondWindow == null) {
         return;
     }
+
     // slate.log([currentWindow.title(),
     //            currentWindow.screen().id(),
     //            currentWindow.app().name(),
@@ -61,14 +62,14 @@ function place2Windows() {
         secondWindow.rect().width == screenSizeX &&
         secondWindow.rect().height == screenSizeY) {
         // Change to split vertical
-        secondWindow.doOperation("move", {
-            "x" : screenOriginX + screenSizeX/2,
+        currentWindow.doOperation("move", {
+            "x" : screenOriginX,
             "y" : screenOriginY,
             "width" : screenSizeX/2,
             "height" : screenSizeY
         });
-        currentWindow.doOperation("move", {
-            "x" : screenOriginX,
+        secondWindow.doOperation("move", {
+            "x" : screenOriginX + screenSizeX/2,
             "y" : screenOriginY,
             "width" : screenSizeX/2,
             "height" : screenSizeY
@@ -82,27 +83,27 @@ function place2Windows() {
                secondWindow.rect().width == screenSizeX/2 &&
                secondWindow.rect().height == screenSizeY) {
         // Change to split horizontal
+        currentWindow.doOperation("move", {
+            "x" : screenOriginX,
+            "y" : screenOriginY,
+            "width" : screenSizeX,
+            "height" : screenSizeY/2
+        });
         secondWindow.doOperation("move", {
             "x" : screenOriginX,
             "y" : screenOriginY + screenSizeY/2,
             "width" : screenSizeX,
             "height" : screenSizeY/2
         });
-        currentWindow.doOperation("move", {
-            "x" : screenOriginX,
-            "y" : screenOriginY,
-            "width" : screenSizeX,
-            "height" : screenSizeY/2
-        });
     } else {
         // Change to full screen
-        secondWindow.doOperation("move", {
+        currentWindow.doOperation("move", {
             "x" : screenOriginX,
             "y" : screenOriginY,
             "width" : screenSizeX,
             "height" : screenSizeY
         });
-        currentWindow.doOperation("move", {
+        secondWindow.doOperation("move", {
             "x" : screenOriginX,
             "y" : screenOriginY,
             "width" : screenSizeX,
@@ -134,6 +135,7 @@ function swapWindows() {
     if (secondWindow == null) {
         return;
     }
+
     // slate.log([currentWindow.title(),
     //            currentWindow.screen().id(),
     //            currentWindow.app().name(),
@@ -152,21 +154,21 @@ function swapWindows() {
     //           ]);
 
     // Perform appropriate action.
-    var secondWindowOriginX = secondWindow.rect().x;
-    var secondWindowOriginY = secondWindow.rect().y;
-    var secondWindowSizeX = secondWindow.rect().width;
-    var secondWindowSizeY = secondWindow.rect().height;
-    secondWindow.doOperation("move", {
-        "x" : currentWindow.rect().x,
-        "y" : currentWindow.rect().y,
-        "width" : currentWindow.rect().width,
-        "height" : currentWindow.rect().height
-    });
+    var currentWindowOriginX = currentWindow.rect().x;
+    var currentWindowOriginY = currentWindow.rect().y;
+    var currentWindowSizeX = currentWindow.rect().width;
+    var currentWindowSizeY = currentWindow.rect().height;
     currentWindow.doOperation("move", {
-        "x" : secondWindowOriginX,
-        "y" : secondWindowOriginY,
-        "width" : secondWindowSizeX,
-        "height" : secondWindowSizeY
+        "x" : secondWindow.rect().x,
+        "y" : secondWindow.rect().y,
+        "width" : secondWindow.rect().width,
+        "height" : secondWindow.rect().height
+    });
+    secondWindow.doOperation("move", {
+        "x" : currentWindowOriginX,
+        "y" : currentWindowOriginY,
+        "width" : currentWindowSizeX,
+        "height" : currentWindowSizeY
     });
 }
 
@@ -201,6 +203,8 @@ function adjustWindowsSizes() {
         return;
     }
 
+    var biggerTolerancy = 100;
+
     // Make sure current window is top or left
     var screenOriginX = screen.visibleRect().x;
     var screenOriginY = screen.visibleRect().y;
@@ -228,48 +232,48 @@ function adjustWindowsSizes() {
             Math.abs(secondWindow.rect().x - (screenOriginX + screenSizeX/2)) < 1 &&
             Math.abs(secondWindow.rect().width - screenSizeX/2) < 1) {
             // Make left window wider
+            currentWindow.doOperation("move", {
+                "x" : screenOriginX,
+                "y" : screenOriginY,
+                "width" : 2*screenSizeX/3,
+                "height" : screenSizeY
+            });
             secondWindow.doOperation("move", {
                 "x" : screenOriginX + 2*screenSizeX/3,
                 "y" : screenOriginY,
                 "width" : screenSizeX/3,
                 "height" : screenSizeY
             });
-            currentWindow.doOperation("move", {
-                "x" : screenOriginX,
-                "y" : screenOriginY,
-                "width" : 2*screenSizeX/3,
-                "height" : screenSizeY
-            });
         } else if (Math.abs(currentWindow.rect().width - 2*screenSizeX/3) < 1 &&
                    Math.abs(secondWindow.rect().x - (screenOriginX + 2*screenSizeX/3)) < 1 &&
-                   secondWindow.rect().width - screenSizeX/3 < 40 &&
+                   secondWindow.rect().width - screenSizeX/3 < biggerTolerancy &&
                    screenSizeX/3 - secondWindow.rect().width < 1) {
             // Make left window narrower
-            secondWindow.doOperation("move", {
-                "x" : screenOriginX + screenSizeX/3,
-                "y" : screenOriginY,
-                "width" : 2*screenSizeX/3,
-                "height" : screenSizeY
-            });
             currentWindow.doOperation("move", {
                 "x" : screenOriginX,
                 "y" : screenOriginY,
                 "width" : screenSizeX/3,
                 "height" : screenSizeY
             });
-        } else if (currentWindow.rect().width - screenSizeX/3 < 40 &&
+            secondWindow.doOperation("move", {
+                "x" : screenOriginX + screenSizeX/3,
+                "y" : screenOriginY,
+                "width" : 2*screenSizeX/3,
+                "height" : screenSizeY
+            });
+        } else if (currentWindow.rect().width - screenSizeX/3 < biggerTolerancy &&
                    screenSizeX/3 - currentWindow.rect().width < 1 &&
                    Math.abs(secondWindow.rect().x - (screenOriginX + screenSizeX/3)) < 1 &&
                    Math.abs(secondWindow.rect().width - 2*screenSizeX/3) < 1) {
             // Make two windows equally wide
-            secondWindow.doOperation("move", {
-                "x" : screenOriginX + screenSizeX/2,
+            currentWindow.doOperation("move", {
+                "x" : screenOriginX,
                 "y" : screenOriginY,
                 "width" : screenSizeX/2,
                 "height" : screenSizeY
             });
-            currentWindow.doOperation("move", {
-                "x" : screenOriginX,
+            secondWindow.doOperation("move", {
+                "x" : screenOriginX + screenSizeX/2,
                 "y" : screenOriginY,
                 "width" : screenSizeX/2,
                 "height" : screenSizeY
@@ -283,97 +287,91 @@ function adjustWindowsSizes() {
             Math.abs(secondWindow.rect().y - (screenOriginY + screenSizeY/2)) < 1 &&
             Math.abs(secondWindow.rect().height - screenSizeY/2) < 1) {
             // Make top window taller
+            currentWindow.doOperation("move", {
+                "x" : screenOriginX,
+                "y" : screenOriginY,
+                "width" : screenSizeX,
+                "height" : 2*screenSizeY/3
+            });
             secondWindow.doOperation("move", {
                 "x" : screenOriginX,
                 "y" : screenOriginY + 2*screenSizeY/3,
                 "width" : screenSizeX,
                 "height" : screenSizeY/3
             });
-            currentWindow.doOperation("move", {
-                "x" : screenOriginX,
-                "y" : screenOriginY,
-                "width" : screenSizeX,
-                "height" : 2*screenSizeY/3
-            });
         } else if (Math.abs(currentWindow.rect().height - 2*screenSizeY/3) < 1 &&
                    Math.abs(secondWindow.rect().y - (screenOriginY + 2*screenSizeY/3)) < 1 &&
-                   secondWindow.rect().height - screenSizeY/3 < 40 &&
+                   secondWindow.rect().height - screenSizeY/3 < biggerTolerancy &&
                    screenSizeY/3 - secondWindow.rect().height < 1) {
             // Make top window shorter
-            secondWindow.doOperation("move", {
-                "x" : screenOriginX,
-                "y" : screenOriginY + screenSizeY/3,
-                "width" : screenSizeX,
-                "height" : 2*screenSizeY/3
-            });
             currentWindow.doOperation("move", {
                 "x" : screenOriginX,
                 "y" : screenOriginY,
                 "width" : screenSizeX,
                 "height" : screenSizeY/3
             });
-        } else if (currentWindow.rect().height - screenSizeY/3 < 40 &&
+            secondWindow.doOperation("move", {
+                "x" : screenOriginX,
+                "y" : screenOriginY + screenSizeY/3,
+                "width" : screenSizeX,
+                "height" : 2*screenSizeY/3
+            });
+        } else if (currentWindow.rect().height - screenSizeY/3 < biggerTolerancy &&
                    screenSizeY/3 - currentWindow.rect().height < 1 &&
                    Math.abs(secondWindow.rect().y - (screenOriginY + screenSizeY/3)) < 1 &&
                    Math.abs(secondWindow.rect().height - 2*screenSizeY/3) < 1) {
             // Make two windows equally tall
-            secondWindow.doOperation("move", {
-                "x" : screenOriginX,
-                "y" : screenOriginY + screenSizeY/2,
-                "width" : screenSizeX,
-                "height" : screenSizeY/2
-            });
             currentWindow.doOperation("move", {
                 "x" : screenOriginX,
                 "y" : screenOriginY,
                 "width" : screenSizeX,
                 "height" : screenSizeY/2
             });
+            secondWindow.doOperation("move", {
+                "x" : screenOriginX,
+                "y" : screenOriginY + screenSizeY/2,
+                "width" : screenSizeX,
+                "height" : screenSizeY/2
+            });
         }
-    } else {
-        return;
-    }
-    // Put the focus on the initial current window
-    if (!isFocusedWindowTopLeft) {
-        secondWindow.focus();
     }
 }
 
-function logMe() {
-    // Get current window
-    var currentWindow = slate.window();
-    // Find another window in same screen.
-    var screen = currentWindow.screen();
-    var secondWindow = null;
-    var numberOfWindowOnCurrentScreen = 0;
-    var windowsArray = new Array();
-    slate.eachApp(function(app) {
-        app.eachWindow(function(window) {
-            if (window != undefined && window.title() != "" && window.screen().id() === screen.id()) {
-                numberOfWindowOnCurrentScreen += 1;
-                secondWindow = window;
+// function logMe() {
+//     // Get current window
+//     var currentWindow = slate.window();
+//     // Find another window in same screen.
+//     var screen = currentWindow.screen();
+//     var secondWindow = null;
+//     var numberOfWindowOnCurrentScreen = 0;
+//     var windowsArray = new Array();
+//     slate.eachApp(function(app) {
+//         app.eachWindow(function(window) {
+//             if (window != undefined && window.title() != "" && window.screen().id() === screen.id()) {
+//                 numberOfWindowOnCurrentScreen += 1;
+//                 secondWindow = window;
 
-                windowsArray.push(
-                    [window.title(),
-                     window.screen().id(),
-                     window.app().name(),
-                     window.rect().x,
-                     window.rect().y,
-                     window.rect().width,
-                     window.rect().height,
-                    ]
-                );
-            }
-        });
-    });
-    if (secondWindow == null) {
-        return;
-    }
-    for(var i = 0; i < windowsArray.length; i++) {
-        slate.log(windowsArray[i]);
-    }
-    slate.log("n = " + numberOfWindowOnCurrentScreen + " 1 : " + currentWindow.title() + " 2 : " + secondWindow.title());
-}
+//                 windowsArray.push(
+//                     [window.title(),
+//                      window.screen().id(),
+//                      window.app().name(),
+//                      window.rect().x,
+//                      window.rect().y,
+//                      window.rect().width,
+//                      window.rect().height,
+//                     ]
+//                 );
+//             }
+//         });
+//     });
+//     if (secondWindow == null) {
+//         return;
+//     }
+//     for(var i = 0; i < windowsArray.length; i++) {
+//         slate.log(windowsArray[i]);
+//     }
+//     slate.log("n = " + numberOfWindowOnCurrentScreen + " 1 : " + currentWindow.title() + " 2 : " + secondWindow.title());
+// }
 
 //slate.bind("b:ctrl;cmd", logMe);
 slate.bind("o:ctrl;cmd", place2Windows);
