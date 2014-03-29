@@ -60,22 +60,10 @@ function swapWindows()
     }
 
     // Perform appropriate action.
-    var currentWindowOriginX = currentWindow.rect().x;
-    var currentWindowOriginY = currentWindow.rect().y;
-    var currentWindowSizeX = currentWindow.rect().width;
-    var currentWindowSizeY = currentWindow.rect().height;
-    currentWindow.doOperation("move", {
-        "x" : secondWindow.rect().x,
-        "y" : secondWindow.rect().y,
-        "width" : secondWindow.rect().width,
-        "height" : secondWindow.rect().height
-    });
-    secondWindow.doOperation("move", {
-        "x" : currentWindowOriginX,
-        "y" : currentWindowOriginY,
-        "width" : currentWindowSizeX,
-        "height" : currentWindowSizeY
-    });
+    var currentWindowPos = getScreenRelativeWindowPosition(currentWindow);
+    var secondWindowPos = getScreenRelativeWindowPosition(secondWindow);
+    moveWindowAt(currentWindow, secondWindow[0], secondWindow[1], secondWindow[2], secondWindow[3]);
+    moveWindowAt(secondWindow, currentWindow[0], currentWindow[1], currentWindow[2], currentWindow[3]);
 }
 
 /**
@@ -173,30 +161,49 @@ function adjustWindowsSizes()
 
 /**
  * Tests the position of the window passed in parameter with a
- * precision of ten pixels. The x and y parameters corresponds to the
+ * precision of 1 pixel. The x and y parameters corresponds to the
  * coordinates of the top-left corner, w to the width and h to the
  * height of the desired position. Those four values must be between 0
- * and 1. For the coordinates (0, 0) is the top-left and (1, 1) is the
+ * and 1 or any string which will be interpreted as a wildcard. For
+ * the coordinates (0, 0) is the top-left and (1, 1) is the
  * bottom-right corner of the screen. For the size 1 is the size of
  * the screen.
  */
 function isWindowPosition(window, x, y, w, h)
 {
-    var precision = 10;
+    var pos = new Array(x, y, w, h);
+
+    conditions = new Array();
+    // Find wildcards
+    for (var i = 0; i < pos.length; i++) {
+        if (typeof pos[i] === "string") {
+            conditions[i] = true;
+        } else if (typeof pos[i] !== 'number' || pos[i] > 1 || pos[i] < 0) {
+            return false;
+        }
+    }
+
+    var precision = 1;
     var screen = window.screen();
     var screenOriginX = screen.visibleRect().x;
     var screenOriginY = screen.visibleRect().y;
     var screenSizeX = screen.visibleRect().width;
     var screenSizeY = screen.visibleRect().height;
 
-    if (Math.abs(window.rect().x - (screenOriginX + x * screenSizeX)) < precision &&
-        Math.abs(window.rect().y - (screenOriginY + y * screenSizeY)) < precision &&
-        Math.abs(window.rect().width - (w * screenSizeX)) < precision  &&
-        Math.abs(window.rect().height - (h * screenSizeY)) < precision) {
-        return true;
+    if (! conditions[0]) {
+        conditions[0] = Math.abs(window.rect().x - (screenOriginX + pos[0] * screenSizeX)) < precision;
+    }
+    if (! conditions[1]) {
+        conditions[1] = Math.abs(window.rect().y - (screenOriginY + pos[1] * screenSizeY)) < precision;
+    }
+    if (! conditions[2]) {
+        conditions[2] = Math.abs(window.rect().width - (pos[2] * screenSizeX)) < precision;
+    }
+    if (! conditions[3]) {
+        conditions[3] = Math.abs(window.rect().height - (pos[3] * screenSizeY)) < precision;
     }
 
-    return false;
+    return conditions[0] && conditions[1] && conditions[2] && conditions[3];
 }
 
 /**
@@ -333,7 +340,6 @@ function throwToScreen(screen)
     var pos = getScreenRelativeWindowPosition(window);
 
     moveWindowToScreenAt(window, pos[0], pos[1], pos[2], pos[3], screen);
-
 }
 
 /**

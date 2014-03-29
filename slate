@@ -59,64 +59,15 @@ alias bottom_left      move screenOriginX;screenOriginY+screenSizeY/2           
 alias bottom_right     move screenOriginX+screenSizeX/2;screenOriginY+screenSizeY/2 screenSizeX/2;screenSizeY/2
 
 # Aliases position laptop monitor
-alias 1_full             ${full}             ${mon_laptop}
-alias 1_center           ${center}           ${mon_laptop}
-alias 1_center_v         ${center_v}         ${mon_laptop}
-alias 1_center_h         ${center_h}         ${mon_laptop}
-alias 1_left_half        ${left_half}        ${mon_laptop}
-alias 1_left_third       ${left_third}       ${mon_laptop}
-alias 1_left_two_thirds  ${left_two_thirds}  ${mon_laptop}
-alias 1_right_half       ${right_half}       ${mon_laptop}
-alias 1_right_third      ${right_third}      ${mon_laptop}
-alias 1_right_two_thirds ${right_two_thirds} ${mon_laptop}
-alias 1_up_half          ${up_half}          ${mon_laptop}
-alias 1_up_third         ${up_third}         ${mon_laptop}
-alias 1_up_two_thirds    ${up_two_thirds}    ${mon_laptop}
-alias 1_down_half        ${down_half}        ${mon_laptop}
-alias 1_down_third       ${down_third}       ${mon_laptop}
-alias 1_down_two_thirds  ${down_two_thirds}  ${mon_laptop}
-alias 1_top_left         ${top_left}         ${mon_laptop}
-alias 1_top_right        ${top_right}        ${mon_laptop}
-alias 1_bottom_left      ${bottom_left}      ${mon_laptop}
-alias 1_bottom_right     ${bottom_right}     ${mon_laptop}
+# alias 1_full             ${full}             ${mon_laptop} #unused example
 
-# Aliases position extern monitor
-alias 2_full             ${full}             ${mon_extern}
-alias 2_center           ${center}           ${mon_extern}
-alias 2_center_v         ${center_v}         ${mon_extern}
-alias 2_center_h         ${center_h}         ${mon_extern}
-alias 2_left_half        ${left_half}        ${mon_extern}
-alias 2_left_third       ${left_third}       ${mon_extern}
-alias 2_left_two_thirds  ${left_two_thirds}  ${mon_extern}
-alias 2_right_half       ${right_half}       ${mon_extern}
-alias 2_right_third      ${right_third}      ${mon_extern}
-alias 2_right_two_thirds ${right_two_thirds} ${mon_extern}
-alias 2_up_half          ${up_half}          ${mon_extern}
-alias 2_up_third         ${up_third}         ${mon_extern}
-alias 2_up_two_thirds    ${up_two_thirds}    ${mon_extern}
-alias 2_down_half        ${down_half}        ${mon_extern}
-alias 2_down_third       ${down_third}       ${mon_extern}
-alias 2_down_two_thirds  ${down_two_thirds}  ${mon_extern}
-alias 2_top_left         ${top_left}         ${mon_extern}
-alias 2_top_right        ${top_right}        ${mon_extern}
-alias 2_bottom_left      ${bottom_left}      ${mon_extern}
-alias 2_bottom_right     ${bottom_right}     ${mon_extern}
-
-# bind moves to laptop monitor
-bind s:ctrl;cmd chain ${1_left_half} | ${1_left_two_thirds} | ${1_left_third}
-bind d:ctrl;cmd chain ${1_down_half} | ${1_down_third} | ${1_down_two_thirds}
-bind e:ctrl;cmd chain ${1_up_half} | ${1_up_two_thirds} | ${1_up_third}
-bind f:ctrl;cmd chain ${1_right_half} | ${1_right_third} | ${1_right_two_thirds}
-bind c:ctrl;cmd chain ${1_full} | ${1_center_v} | ${1_center_h} | ${1_center}
-bind v:ctrl;cmd chain ${1_top_left} | ${1_top_right} | ${1_bottom_left} | ${1_bottom_right}
-
-# bind moves to extern monitor
-bind s:shift;ctrl;cmd chain ${2_left_half} | ${2_left_two_thirds} | ${2_left_third}
-bind d:shift;ctrl;cmd chain ${2_down_half} | ${2_down_third} | ${2_down_two_thirds}
-bind e:shift;ctrl;cmd chain ${2_up_half} | ${2_up_two_thirds} | ${2_up_third}
-bind f:shift;ctrl;cmd chain ${2_right_half} | ${2_right_third} | ${2_right_two_thirds}
-bind c:shift;ctrl;cmd chain ${2_full} | ${2_center_v} | ${2_center_h} | ${2_center}
-bind v:shift;ctrl;cmd chain ${2_top_left} | ${2_top_right} | ${2_bottom_left} | ${2_bottom_right}
+# bind moves to current monitor
+bind s:ctrl;cmd chain ${left_half} | ${left_two_thirds} | ${left_third}
+bind d:ctrl;cmd chain ${down_half} | ${down_third} | ${down_two_thirds}
+bind e:ctrl;cmd chain ${up_half} | ${up_two_thirds} | ${up_third}
+bind f:ctrl;cmd chain ${right_half} | ${right_third} | ${right_two_thirds}
+bind c:ctrl;cmd chain ${full} | ${center_v} | ${center_h} | ${center}
+bind v:ctrl;cmd chain ${top_left} | ${top_right} | ${bottom_left} | ${bottom_right}
 
 # bind focus
 bind left:ctrl;cmd   focus left
