@@ -11,6 +11,7 @@ config defaultToCurrentScreen true
 # Config focus
 config focusCheckWidthMax 3000 (works even with not so close windows)
 config focusPreferSameApp false
+#config defaultToCurrentScreen true
 
 # Config modal mode
 config modalEscapeKey esc
@@ -117,19 +118,14 @@ bind f:shift;ctrl;cmd chain ${2_right_half} | ${2_right_third} | ${2_right_two_t
 bind c:shift;ctrl;cmd chain ${2_full} | ${2_center_v} | ${2_center_h} | ${2_center}
 bind v:shift;ctrl;cmd chain ${2_top_left} | ${2_top_right} | ${2_bottom_left} | ${2_bottom_right}
 
-# bind throw
-bind a:ctrl;cmd throw previous
-bind z:ctrl;cmd throw next
-bind 1:ctrl;cmd throw 0
-bind 2:ctrl;cmd throw 1
-bind 3:ctrl;cmd throw 2
-
 # bind focus
 bind left:ctrl;cmd   focus left
 bind down:ctrl;cmd   focus down
 bind up:ctrl;cmd     focus up
 bind right:ctrl;cmd  focus right
+
 bind return:ctrl;cmd focus behind
+
 bind j:ctrl;cmd      focus ${terminal}
 bind k:ctrl;cmd      focus ${editor}
 bind l:ctrl;cmd      focus ${ide}
@@ -146,20 +142,15 @@ bind e:m;ctrl;cmd:toggle chain ${up_half} | ${up_two_thirds} | ${up_third}
 bind f:m;ctrl;cmd:toggle chain ${right_half} | ${right_third} | ${right_two_thirds}
 bind c:m;ctrl;cmd:toggle chain ${full} | ${center_v} | ${center_h} | ${center}
 bind v:m;ctrl;cmd:toggle chain ${top_left} | ${top_right} | ${bottom_left} | ${bottom_right}
+
 bind left:m;ctrl;cmd:toggle   focus left
 bind down:m;ctrl;cmd:toggle   focus down
 bind up:m;ctrl;cmd:toggle     focus up
 bind right:m;ctrl;cmd:toggle  focus right
+
 bind return:m;ctrl;cmd:toggle focus behind
+
 bind j:m;ctrl;cmd:toggle      focus ${terminal}
 bind k:m;ctrl;cmd:toggle      focus ${editor}
 bind l:m;ctrl;cmd:toggle      focus ${ide}
 bind n:m;ctrl;cmd:toggle      focus ${navigator}
-bind a:m;ctrl;cmd:toggle throw previous
-bind z:m;ctrl;cmd:toggle throw next
-bind 1:m;ctrl;cmd:toggle throw 0
-bind 2:m;ctrl;cmd:toggle throw 1
-bind 3:m;ctrl;cmd:toggle throw 2
-#bind i:m;ctrl;cmd:toggle sequence focus right > ${right_half} | ${left_half}
-#bind o:m;ctrl;cmd:toggle sequence focus behind > ${left_half} | ${right_half} | focus left
-#bind p:m;ctrl;cmd:toggle sequence focus right > ${full} | ${full} | focus behind

@@ -25,18 +25,15 @@ function place2Windows()
         return;
     }
 
-    slate.log("TEST");
     // Perform appropriate action.
     if (isWindowPosition(currentWindow, 0, 0, 1, 1) &&
         isWindowPosition(secondWindow, 0, 0, 1, 1)) {
         // Change to split vertical
-        slate.log("Two full");
         moveWindowAt(currentWindow, 0, 0, 1/2, 1);
         moveWindowAt(secondWindow, 1/2, 0, 1/2, 1);
     } else if (isWindowPosition(currentWindow, 0, 0, 1/2, 1) &&
                isWindowPosition(secondWindow, 1/2, 0, 1/2, 1)) {
         // Change to split horizontal
-        slate.log("split vertical");
         moveWindowAt(currentWindow, 0, 0, 1, 1/2);
         moveWindowAt(secondWindow, 0, 1/2, 1, 1/2);
     } else {
@@ -54,7 +51,6 @@ function place2Windows()
  */
 function swapWindows()
 {
-
     // Get current window
     var currentWindow = slate.window();
     // Find another window in same screen.
@@ -200,12 +196,6 @@ function isWindowPosition(window, x, y, w, h)
         return true;
     }
 
-    slate.log(window.title()),
-    slate.log(window.rect().x + ' // ' + Math.abs(window.rect().x - (screenOriginX + x * screenSizeX)));
-    slate.log(window.rect().y + ' // ' + Math.abs(window.rect().y - (screenOriginY + y * screenSizeY)));
-    slate.log(window.rect().width + ' // ' + Math.abs(window.rect().width - (w * screenSizeX)));
-    slate.log(window.rect().height + ' // ' + Math.abs(window.rect().height - (h * screenSizeY)));
-
     return false;
 }
 
@@ -220,6 +210,20 @@ function isWindowPosition(window, x, y, w, h)
 function moveWindowAt(window, x, y, w, h)
 {
     var screen = window.screen();
+    moveWindowToScreenAt(window, x, y, w, h, screen);
+}
+
+/**
+ * Moves the window passed in parameter. The x and y parameters
+ * corresponds to the coordinates of the top-left corner, w to the
+ * width and h to the height of the desired position. Those four
+ * values must be between 0 and 1. For the coordinates (0, 0) is the
+ * top-left and (1, 1) is the bottom-right corner of the screen. For
+ * the size 1 is the size of the screen. The window is moved in the
+ * screen passed in parameters.
+ */
+function moveWindowToScreenAt(window, x, y, w, h, screen)
+{
     var screenOriginX = screen.visibleRect().x;
     var screenOriginY = screen.visibleRect().y;
     var screenSizeX = screen.visibleRect().width;
@@ -229,7 +233,8 @@ function moveWindowAt(window, x, y, w, h)
         "x" : screenOriginX + x * screenSizeX,
         "y" : screenOriginY + y * screenSizeY,
         "width" : w * screenSizeX,
-        "height" : h * screenSizeY});
+        "height" : h * screenSizeY,
+        "screen" : screen.id()});
 }
 
 /**
@@ -251,9 +256,118 @@ function getSecondWindow(currentWindow)
         });
     });
 
-    return secondWindow
+    return secondWindow;
+}
+
+/**
+ * Throws the window to next screen keeping the same position
+ * relatively to screen.
+ */
+function throwToNextScreen()
+{
+    // Get next screen
+    var nextId = (window.screen().id() + 1) % slate.screenCount();
+    var screen = slate.screenForRef(nextId);
+
+    throwToScreen(screen);
+}
+
+/**
+ * Throws the window to previous screen keeping the same position
+ * relatively to screen.
+ */
+function throwToPreviousScreen()
+{
+    // Get previous screen
+    var previousId = (window.screen().id() - 1) % slate.screenCount();
+    var screen = slate.screenForRef(nextId);
+
+    throwToScreen(screen);
+}
+
+/**
+ * Throws the window to first screen keeping the same position
+ * relatively to screen.
+ */
+function throwToFirstScreen()
+{
+    // Get first screen
+    var screen = slate.screenForRef("0");
+
+    throwToScreen(screen);
+}
+
+/**
+ * Throws the window to second screen keeping the same position
+ * relatively to screen.
+ */
+function throwToSecondScreen()
+{
+    // Get second screen
+    var screen = slate.screenForRef("1");
+
+    throwToScreen(screen);
+}
+
+/**
+ * Throws the window to third screen keeping the same position
+ * relatively to screen.
+ */
+function throwToThirdScreen()
+{
+    // Get third screen
+    var screen = slate.screenForRef("2");
+
+    throwToScreen(screen);
+}
+
+/**
+ * Throws the window to the given screen keeping the same position
+ * relatively to screen.
+ */
+function throwToScreen(screen)
+{
+    // Get current window
+    var window = slate.window();
+    // Get window position relatively to the screen
+    var pos = getScreenRelativeWindowPosition(window);
+
+    moveWindowToScreenAt(window, pos[0], pos[1], pos[2], pos[3], screen);
+
+}
+
+/**
+ * Returns an array of 4 floats between 0 and 1. The two firsts give
+ * the coordinate of the window relatively to the screen, (0, 0) means
+ * at top-left and (1, 1) at bottom-right. The next element is the
+ * width, 1 means as wide as the screen. The last element is the
+ * height, 1 means as high as the screen.
+ */
+function getScreenRelativeWindowPosition(window)
+{
+    var screen = window.screen();
+    var x = (window.rect().x - screen.visibleRect().x) / screen.visibleRect().width;
+    var y = (window.rect().y - screen.visibleRect().y) / screen.visibleRect().height;
+    var w = window.rect().width / screen.visibleRect().width;
+    var h = window.rect().height / screen.visibleRect().height;
+
+    return new Array(x, y, w, h);
 }
 
 slate.bind("o:ctrl;cmd", place2Windows);
 slate.bind("i:ctrl;cmd", swapWindows);
 slate.bind("p:ctrl;cmd", adjustWindowsSizes);
+slate.bind("a:ctrl;cmd", throwToNextScreen);
+slate.bind("z:ctrl;cmd", throwToPreviousScreen);
+slate.bind("1:ctrl;cmd", throwToFirstScreen);
+slate.bind("2:ctrl;cmd", throwToSecondScreen);
+slate.bind("3:ctrl;cmd", throwToThirdScreen);
+
+slate.bind("o:m;ctrl;cmd:toggle", place2Windows);
+slate.bind("i:m;ctrl;cmd:toggle", swapWindows);
+slate.bind("p:m;ctrl;cmd:toggle", adjustWindowsSizes);
+slate.bind("a:m;ctrl;cmd:toggle", throwToNextScreen);
+slate.bind("z:m;ctrl;cmd:toggle", throwToPreviousScreen);
+slate.bind("1:m;ctrl;cmd:toggle", throwToFirstScreen);
+slate.bind("2:m;ctrl;cmd:toggle", throwToSecondScreen);
+slate.bind("3:m;ctrl;cmd:toggle", throwToThirdScreen);
