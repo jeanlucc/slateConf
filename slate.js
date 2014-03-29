@@ -21,7 +21,7 @@ function place2Windows()
     var currentWindow = slate.window();
     // Find another window in same screen.
     var secondWindow = getSecondWindow(currentWindow);
-    if (secondWindow == null) {
+    if (secondWindow === null) {
         return;
     }
 
@@ -55,15 +55,16 @@ function swapWindows()
     var currentWindow = slate.window();
     // Find another window in same screen.
     var secondWindow = getSecondWindow(currentWindow);
-    if (secondWindow == null) {
+    if (secondWindow === null) {
         return;
     }
 
-    // Perform appropriate action.
-    var currentWindowPos = getScreenRelativeWindowPosition(currentWindow);
-    var secondWindowPos = getScreenRelativeWindowPosition(secondWindow);
-    moveWindowAt(currentWindow, secondWindow[0], secondWindow[1], secondWindow[2], secondWindow[3]);
-    moveWindowAt(secondWindow, currentWindow[0], currentWindow[1], currentWindow[2], currentWindow[3]);
+    // Get windows positions.
+    var pos1 = getScreenRelativeWindowPosition(currentWindow);
+    var pos2 = getScreenRelativeWindowPosition(secondWindow);
+    // Swap them
+    moveWindowAt(currentWindow, pos2[0], pos2[1], pos2[2], pos2[3]);
+    moveWindowAt(secondWindow, pos1[0], pos1[1], pos1[2], pos1[3]);
 }
 
 /**
@@ -84,74 +85,54 @@ function adjustWindowsSizes()
     var currentWindow = slate.window();
     // Find another window in same screen.
     var secondWindow = getSecondWindow(currentWindow);
-    if (secondWindow == null) {
+    if (secondWindow === null) {
         return;
     }
 
     var biggerTolerancy = 100;
 
     // Make sure current window is top or left
-    var screen = currentWindow.screen();
-    var screenOriginX = screen.visibleRect().x;
-    var screenOriginY = screen.visibleRect().y;
-    var screenSizeX = screen.visibleRect().width;
-    var screenSizeY = screen.visibleRect().height;
-    var isFocusedWindowTopLeft =
-        currentWindow.topLeft().x == screenOriginX &&
-        currentWindow.topLeft().y == screenOriginY;
-    if (!isFocusedWindowTopLeft) {
+    if (! isWindowAt(currentWindow, 0, 0, '*', '*')) {
         var tmpWindow = secondWindow;
         secondWindow = currentWindow;
         currentWindow = tmpWindow;
     }
 
-    if (currentWindow.rect().height == screenSizeY &&
-        secondWindow.rect().height == screenSizeY &&
-        secondWindow.rect().y == screenOriginY) {
+    if (isWindowAt(currentWindow, '*', '*', '*', 1) &&
+        isWindowAt(secondWindow, '*', 0, '*', 1)) {
         // Case split vertical
-        if (Math.abs(currentWindow.rect().width - screenSizeX/2) < 1 &&
-            Math.abs(secondWindow.rect().x - (screenOriginX + screenSizeX/2)) < 1 &&
-            Math.abs(secondWindow.rect().width - screenSizeX/2) < 1) {
+        if (isWindowAt(currentWindow, '*', '*', 1/2, '*') &&
+            isWindowAt(secondWindow, 1/2, '*', 1/2, '*')) {
             // Make left window wider
             moveWindowAt(currentWindow, 0, 0, 2/3, 1);
             moveWindowAt(secondWindow, 2/3, 0, 1/3, 1);
-        } else if (Math.abs(currentWindow.rect().width - 2*screenSizeX/3) < 1 &&
-                   Math.abs(secondWindow.rect().x - (screenOriginX + 2*screenSizeX/3)) < 1 &&
-                   secondWindow.rect().width - screenSizeX/3 < biggerTolerancy &&
-                   screenSizeX/3 - secondWindow.rect().width < 1) {
+        } else if (isWindowAt(currentWindow, '*', '*', 2/3, '*') &&
+                   isWindowAtWithPrecision(secondWindow, [2/3], ['*'], [1/3, biggerTolerancy], ['*'])) {
             // Make left window narrower
             moveWindowAt(currentWindow, 0, 0, 1/3, 1);
             moveWindowAt(secondWindow, 1/3, 0, 2/3, 1);
-        } else if (currentWindow.rect().width - screenSizeX/3 < biggerTolerancy &&
-                   screenSizeX/3 - currentWindow.rect().width < 1 &&
-                   Math.abs(secondWindow.rect().x - (screenOriginX + screenSizeX/3)) < 1 &&
-                   Math.abs(secondWindow.rect().width - 2*screenSizeX/3) < 1) {
+        } else if (isWindowAtWithPrecision(currentWindow, ['*'], ['*'], [1/3, biggerTolerancy], ['*']) &&
+                   isWindowAt(secondWindow, 1/3, '*', 2/3, '*')) {
             // Make two windows equally wide
             moveWindowAt(currentWindow, 0, 0, 1/2, 1);
             moveWindowAt(secondWindow, 1/2, 0, 1/2, 1);
         }
 
-    } else if (currentWindow.rect().width == screenSizeX &&
-               secondWindow.rect().width == screenSizeX &&
-               secondWindow.rect().x == screenOriginX) {
+    } else if (isWindowAt(currentWindow, '*', '*', 1, '*') &&
+               isWindowAt(secondWindow, 0, '*', 1, '*')) {
         // Case split horizontal
-        if (Math.abs(currentWindow.rect().height - screenSizeY/2) < 1 &&
-            Math.abs(secondWindow.rect().y - (screenOriginY + screenSizeY/2)) < 1 &&
-            Math.abs(secondWindow.rect().height - screenSizeY/2) < 1) {
+        if (isWindowAt(currentWindow, '*', '*', '*', 1/2) &&
+            isWindowAt(secondWindow, '*', 1/2, '*', 1/2)) {
             // Make top window taller
             moveWindowAt(currentWindow, 0, 0, 1, 2/3);
             moveWindowAt(secondWindow, 0, 2/3, 1, 1/3);
-        } else if (Math.abs(currentWindow.rect().height - 2*screenSizeY/3) < 1 &&
-                   Math.abs(secondWindow.rect().y - (screenOriginY + 2*screenSizeY/3)) < 1 &&
-                   secondWindow.rect().height - screenSizeY/3 < biggerTolerancy &&
-                   screenSizeY/3 - secondWindow.rect().height < 1) {
+        } else if (isWindowAt(currentWindow, '*', '*', '*', 2/3) &&
+                   isWindowAtWithPrecision(secondWindow, ['*'], [2/3], ['*'], [1/3, biggerTolerancy])) {
             // Make top window shorter
             moveWindowAt(currentWindow, 0, 0, 1, 1/3);
             moveWindowAt(secondWindow, 0, 1/3, 1, 2/3);
-        } else if (currentWindow.rect().height - screenSizeY/3 < biggerTolerancy &&
-                   screenSizeY/3 - currentWindow.rect().height < 1 &&
-                   Math.abs(secondWindow.rect().y - (screenOriginY + screenSizeY/3)) < 1 &&
-                   Math.abs(secondWindow.rect().height - 2*screenSizeY/3) < 1) {
+        } else if (isWindowAtWithPrecision(currentWindow, ['*'], ['*'], ['*'], [1/3, biggerTolerancy]) &&
+                   isWindowAt(secondWindow, '*', 1/3, '*', 2/3)) {
             // Make two windows equally tall
             moveWindowAt(currentWindow, 0, 0, 1, 1/2);
             moveWindowAt(secondWindow, 0, 1/2, 1, 1/2);
@@ -210,10 +191,10 @@ function isWindowAtWithPrecision(window, x, y, w, h)
         } else if (typeof pos[i] !== 'number' || pos[i] > 1 || pos[i] < 0) {
             return false;
         } else {
-            if (typeof precisionBigger[i] !== "integer" || precisionBigger[i] < 1) {
+            if (typeof precisionBigger[i] !== "number" || precisionBigger[i] < 1) {
                 precisionBigger[i] = defaultPrecision;
             }
-            if (typeof precisionSmaller[i] !== "integer" || precisionSmaller[i] < 1) {
+            if (typeof precisionSmaller[i] !== "number" || precisionSmaller[i] < 1) {
                 precisionSmaller[i] = defaultPrecision;
             }
         }
