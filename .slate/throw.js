@@ -29,7 +29,7 @@ slate.bindAll({
 function throwToNextScreen()
 {
     // Get next screen
-    var nextId = (window.screen().id() + 1) % slate.screenCount();
+    var nextId = (slate.screen().id() + 1) % slate.screenCount();
     var screen = slate.screenForRef(nextId);
 
     throwToScreen(screen);
@@ -42,8 +42,8 @@ function throwToNextScreen()
 function throwToPreviousScreen()
 {
     // Get previous screen
-    var previousId = (window.screen().id() - 1) % slate.screenCount();
-    var screen = slate.screenForRef(nextId);
+    var previousId = (slate.screen().id() - 1) % slate.screenCount();
+    var screen = slate.screenForRef(previousId);
 
     throwToScreen(screen);
 }

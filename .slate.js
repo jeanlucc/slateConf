@@ -288,7 +288,6 @@ function moveWindowAt(window, x, y, w, h, screen)
     window.doOperation(getMoveOperation(x, y, w, h, screen));
 }
 
-
 /**
  * Creates a move operation with the parameters. The x and y
  * parameters corresponds to the coordinates of the top-left corner, w
