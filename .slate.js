@@ -14,7 +14,7 @@ slate.configAll({
 //    nudgePercentOf : screenSize,  // I don't use this
 //    resizePercentOf : screenSize, // I don't use this
 //    orderScreensLeftToRight : false,
-    defaultToCurrentScreen : true,
+//    defaultToCurrentScreen : true,
     // focus
     focusCheckWidthMax : 3000, // (works even with not so close windows),
     focusPreferSameApp : false,
@@ -55,51 +55,6 @@ var my_grid = slate.operation("grid", {
     "padding" : 2
 });
 
-// moves
-var full             = getMoveOperation(0  , 0  , 1  , 1  );
-var center           = getMoveOperation(1/4, 1/4, 1/2, 1/2);
-var center_v         = getMoveOperation(1/3, 0  , 1/3, 1  );
-var center_h         = getMoveOperation(0  , 1/3, 1  , 1/3);
-var center_chain     = slate.operation("chain", {
-    "operations" : [full, center, center_v, center_h]
-});
-
-var left_half        = getMoveOperation(0  , 0  , 1/2, 1  );
-var left_third       = getMoveOperation(0  , 0  , 1/3, 1  );
-var left_two_thirds  = getMoveOperation(0  , 0  , 2/3, 1  );
-var left_chain     = slate.operation("chain", {
-    "operations" : [left_half, left_third, left_two_thirds]
-});
-
-var right_half       = getMoveOperation(1/2, 0  , 1/2, 1  );
-var right_third      = getMoveOperation(2/3, 0  , 1/3, 1  );
-var right_two_thirds = getMoveOperation(1/3, 0  , 2/3, 1  );
-var right_chain     = slate.operation("chain", {
-    "operations" : [right_half, right_third, right_two_thirds]
-});
-
-var up_half          = getMoveOperation(0  , 0  , 1  , 1/2);
-var up_third         = getMoveOperation(0  , 0  , 1  , 1/3);
-var up_two_thirds    = getMoveOperation(0  , 0  , 1  , 2/3);
-var up_chain     = slate.operation("chain", {
-    "operations" : [up_half, up_third, up_two_thirds]
-});
-
-var down_half        = getMoveOperation(0  , 1/2, 1  , 1/2);
-var down_third       = getMoveOperation(0  , 2/3, 1  , 1/3);
-var down_two_thirds  = getMoveOperation(0  , 1/3, 1  , 2/3);
-var down_chain     = slate.operation("chain", {
-    "operations" : [down_half, down_third, down_two_thirds]
-});
-
-var top_left         = getMoveOperation(0  , 0  , 1/2, 1/2);
-var top_right        = getMoveOperation(1/2, 0  , 1/2, 1/2);
-var bottom_left      = getMoveOperation(0  , 1/2, 1/2, 1/2);
-var bottom_right     = getMoveOperation(1/2, 1/2, 1/2, 1/2);
-var corner_chain     = slate.operation("chain", {
-    "operations" : [top_left, top_right, bottom_left, bottom_right]
-});
-
 // Focus
 var focus_left      = slate.operation("focus", {"direction" : "left"});
 var focus_down      = slate.operation("focus", {"direction" : "down"});
@@ -121,13 +76,6 @@ var focus_navigator = slate.operation("focus", {"app" : navigator});
 
 slate.bindAll({
     // normal bindings
-    // moves
-    "s:ctrl;cmd"      : left_chain,
-    "d:ctrl;cmd"      : down_chain,
-    "e:ctrl;cmd"      : up_chain,
-    "f:ctrl;cmd"      : right_chain,
-    "c:ctrl;cmd"      : center_chain,
-    "v:ctrl;cmd"      : corner_chain,
     // focus
     "left:ctrl;cmd"   : focus_left,
     "down:ctrl;cmd"   : focus_down,
@@ -147,13 +95,6 @@ slate.bindAll({
     "p:ctrl;cmd"      : adjust2WindowsSizes,
 
     // Modal bindings
-    // moves
-    "s:m;ctrl;cmd:toggle"      : left_chain,
-    "d:m;ctrl;cmd:toggle"      : down_chain,
-    "e:m;ctrl;cmd:toggle"      : up_chain,
-    "f:m;ctrl;cmd:toggle"      : right_chain,
-    "c:m;ctrl;cmd:toggle"      : center_chain,
-    "v:m;ctrl;cmd:toggle"      : corner_chain,
     // focus
     "left:m;ctrl;cmd:toggle"   : focus_left,
     "down:m;ctrl;cmd:toggle"   : focus_down,
@@ -222,15 +163,15 @@ function isWindowAtWithPrecision(window, x, y, w, h)
     conditions = new Array();
     // Find wildcards
     for (var i = 0; i < pos.length; i++) {
-        if (typeof pos[i] === "string") {
+        if (typeof pos[i] == "string") {
             conditions[i] = true;
-        } else if (typeof pos[i] !== 'number' || pos[i] > 1 || pos[i] < 0) {
+        } else if (typeof pos[i] != 'number' || pos[i] > 1 || pos[i] < 0) {
             return false;
         } else {
-            if (typeof precisionBigger[i] !== "number" || precisionBigger[i] < 1) {
+            if (typeof precisionBigger[i] != "number" || precisionBigger[i] < 1) {
                 precisionBigger[i] = defaultPrecision;
             }
-            if (typeof precisionSmaller[i] !== "number" || precisionSmaller[i] < 1) {
+            if (typeof precisionSmaller[i] != "number" || precisionSmaller[i] < 1) {
                 precisionSmaller[i] = defaultPrecision;
             }
         }
@@ -359,11 +300,11 @@ function getScreenRelativeWindowPosition(window)
 
 /**
  *  Loads a ".js" file by name without ".js" extension in directory
- *  "~/.slate". Log a message on error.
+ *  "~/.slate.d". Log a message on error.
  */
 function load(fileName)
 {
-    var path = "~/.slate/" + fileName + ".js";
+    var path = "~/.slate.d/" + fileName + ".js";
     if (! slate.source(path)) {
         slate.log("Error while loading " + path);
     }
@@ -512,6 +453,9 @@ function adjust2WindowsSizes()
 
 // End of advanced functions
 // _________________________
+
+// Move
+load("move");
 
 // Throw
 load("throw");

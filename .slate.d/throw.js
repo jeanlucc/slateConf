@@ -19,9 +19,6 @@ slate.bindAll({
 // End of bindings
 // _______________
 
-// Throw functions
-// _______________
-
 /**
  * Throws the window to next screen keeping the same position
  * relatively to screen.
@@ -92,13 +89,18 @@ function throwToThirdScreen()
  */
 function throwToScreen(screen)
 {
+    if (screen.id() < 0 || screen.id() >= slate.screenCount()) {
+        return;
+    }
+
     // Get current window
     var window = slate.window();
+    if (undefined === window) {
+        return;
+    }
+
     // Get window position relatively to the screen
     var pos = getScreenRelativeWindowPosition(window);
 
     moveWindowAt(window, pos[0], pos[1], pos[2], pos[3], screen);
 }
-
-// End throw functions
-// ___________________
