@@ -1,7 +1,7 @@
 slateConf
 =========
 
-This the [slate](https://github.com/jigish/slate) configuration file
+This is the [slate](https://github.com/jigish/slate) configuration files
 of Jean-Luc Colombier. Slate is a really powerful window manager for
 Mac OSX.
 
