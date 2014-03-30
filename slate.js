@@ -588,7 +588,7 @@ function throwToScreen(screen)
     // Get window position relatively to the screen
     var pos = getScreenRelativeWindowPosition(window);
 
-    moveWindowToScreenAt(window, pos[0], pos[1], pos[2], pos[3], screen);
+    moveWindowAt(window, pos[0], pos[1], pos[2], pos[3], screen);
 }
 
 // End throw functions
