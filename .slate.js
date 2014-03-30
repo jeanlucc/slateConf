@@ -89,10 +89,6 @@ slate.bindAll({
     // hints and grid
     "h:ctrl;cmd"      : my_hint,
     "g:ctrl;cmd"      : my_grid,
-    // advanced
-    "i:ctrl;cmd"      : swapWindows,
-    "o:ctrl;cmd"      : place2Windows,
-    "p:ctrl;cmd"      : adjust2WindowsSizes,
 
     // Modal bindings
     // focus
@@ -105,10 +101,6 @@ slate.bindAll({
     "k:m;ctrl;cmd:toggle"      : focus_editor,
     "l:m;ctrl;cmd:toggle"      : focus_ide,
     "n:m;ctrl;cmd:toggle"      : focus_navigator,
-    // advanced
-    "i:m;ctrl;cmd:toggle"      : swapWindows,
-    "o:m;ctrl;cmd:toggle"      : place2Windows,
-    "p:m;ctrl;cmd:toggle"      : adjust2WindowsSizes,
 });
 
 // End of bindings
@@ -155,6 +147,10 @@ function isWindowAt(window, x, y, w, h)
  */
 function isWindowAtWithPrecision(window, x, y, w, h)
 {
+    if (undefined == window) {
+        return false;
+    }
+
     var defaultPrecision = 1;
     var pos = new Array(x[0], y[0], w[0], h[0]);
     var precisionBigger = new Array(x[1], y[1], w[1], h[1]);
@@ -222,7 +218,11 @@ function isWindowAtWithPrecision(window, x, y, w, h)
  */
 function moveWindowAt(window, x, y, w, h, screen)
 {
-    if (undefined === screen) {
+    if (undefined == window) {
+        return;
+    }
+
+    if (undefined == screen) {
         screen = window.screen();
     }
 
@@ -235,13 +235,28 @@ function moveWindowAt(window, x, y, w, h, screen)
  * to the width and h to the height of the desired position. Those
  * four values must be between 0 and 1. For the coordinates (0, 0) is
  * the top-left and (1, 1) is the bottom-right corner of the
- * screen. For the sizes 1 is the size of the screen. The window is
- * moved in the screen passed in parameters or the current focused
- * screen if none is given.
+ * screen. For the sizes 1 is the size of the screen. w and h are
+ * saturated thus the window will not exceed screen limits. The window
+ * is moved in the screen passed in parameters or the current focused
+ * screen if none is given. Returns undefined on error;
  */
 function getMoveOperation(x, y, w, h, screen)
 {
-    if (undefined === screen) {
+    if (typeof x != "number" || typeof y != "number" ||
+        typeof w != "number" || typeof h != "number" ||
+        x < 0 || y < 0 || w < 0 || h < 0 || x > 1 || y > 1) {
+        return;
+    }
+
+    if (x + w > 1) {
+        w = 1 - x;
+    }
+    if (y + h > 1) {
+        h = 1 - y
+    }
+
+    if (undefined == screen ||
+        screen.id() < 0 || screen.id() > slate.screenCount() ) {
         screen = slate.screen();
     }
 
@@ -271,8 +286,9 @@ function getSecondWindow(currentWindow)
         app.eachWindow(function(window) {
             if (window != undefined && window.title() != "" && window.screen().id() === screen.id()) {
                 numberOfTreatedWindowsOnCurrentScreen += 1;
-                if (numberOfTreatedWindowsOnCurrentScreen == 2)
+                if (numberOfTreatedWindowsOnCurrentScreen == 2) {
                     secondWindow = window;
+                }
             }
         });
     });
@@ -281,14 +297,19 @@ function getSecondWindow(currentWindow)
 }
 
 /**
- * Returns an array of 4 floats between 0 and 1. The two firsts give
- * the coordinate of the window relatively to the screen, (0, 0) means
- * at top-left and (1, 1) at bottom-right. The next element is the
- * width, 1 means as wide as the screen. The last element is the
- * height, 1 means as high as the screen.
+ * Returns an array of 4 floats between 0 and 1 or undefined in case
+ * of failure. The two firsts give the coordinate of the window
+ * relatively to the screen, (0, 0) means at top-left and (1, 1) at
+ * bottom-right. The next element is the width, 1 means as wide as the
+ * screen. The last element is the height, 1 means as high as the
+ * screen.
  */
 function getScreenRelativeWindowPosition(window)
 {
+    if (undefined == window || undefined == window.rect()) {
+        return;
+    }
+
     var screen = window.screen();
     var x = (window.rect().x - screen.visibleRect().x) / screen.visibleRect().width;
     var y = (window.rect().y - screen.visibleRect().y) / screen.visibleRect().height;
@@ -313,149 +334,12 @@ function load(fileName)
 // End of auxiliary functions
 // __________________________
 
-// Advanced functions
-// __________________
-
-/**
- * Inverts the position of two windows of the current monitor. The
- * current window is the first window and the second is undefined thus
- * it should not be used if there are more than two windows on the
- * current monitor. However it might work in a good way.
- */
-function swapWindows()
-{
-    // Get current window
-    var currentWindow = slate.window();
-    // Find another window in same screen.
-    var secondWindow = getSecondWindow(currentWindow);
-    if (secondWindow === null) {
-        return;
-    }
-
-    // Get windows positions.
-    var pos1 = getScreenRelativeWindowPosition(currentWindow);
-    var pos2 = getScreenRelativeWindowPosition(secondWindow);
-    // Swap them
-    moveWindowAt(currentWindow, pos2[0], pos2[1], pos2[2], pos2[3]);
-    moveWindowAt(secondWindow, pos1[0], pos1[1], pos1[2], pos1[3]);
-}
-
-/**
- * Changes the diposition of two windows of the current monitor. The
- * current window is the first window and the second is undefined thus
- * it should not be used if there are more than two windows on the
- * current monitor. However it might work in a good way. The three
- * possible dispositions are: two full screen windows, side-by-side
- * and top-bottom.
- *
- * Note: it does not work if the window has no name.
- */
-function place2Windows()
-{
-    // Get current window
-    var currentWindow = slate.window();
-    // Find another window in same screen.
-    var secondWindow = getSecondWindow(currentWindow);
-    if (secondWindow === null) {
-        return;
-    }
-
-    // Perform appropriate action.
-    if (isWindowAt(currentWindow, 0, 0, 1, 1) &&
-        isWindowAt(secondWindow, 0, 0, 1, 1)) {
-        // Change to split vertical
-        moveWindowAt(currentWindow, 0, 0, 1/2, 1);
-        moveWindowAt(secondWindow, 1/2, 0, 1/2, 1);
-    } else if (isWindowAt(currentWindow, 0, 0, 1/2, 1) &&
-               isWindowAt(secondWindow, 1/2, 0, 1/2, 1)) {
-        // Change to split horizontal
-        moveWindowAt(currentWindow, 0, 0, 1, 1/2);
-        moveWindowAt(secondWindow, 0, 1/2, 1, 1/2);
-    } else {
-        // Change to full screen
-        moveWindowAt(currentWindow, 0, 0, 1, 1);
-        moveWindowAt(secondWindow, 0, 0, 1, 1);
-    }
-}
-
-/**
- * Changes the size of two windows in a particular configuration. The
- * current window is the first window and the second is undefined thus
- * it should not be used if there are more than two windows on the
- * current monitor. However it might work in a good way. There are six
- * possible configurations divided in two groups, the windows can be
- * side-by-side or top-bottom. For each group the three possibilities
- * are the two windows occupies a half screen, the first (left or top)
- * window occupies one third of the screeen and the other window
- * occupies the other two-thirds or the opposit (first two-thirds,
- * second a third).
- */
-function adjust2WindowsSizes()
-{
-    // Get current window
-    var currentWindow = slate.window();
-    // Find another window in same screen.
-    var secondWindow = getSecondWindow(currentWindow);
-    if (secondWindow === null) {
-        return;
-    }
-
-    var biggerTolerancy = 100;
-
-    // Make sure current window is top or left
-    if (! isWindowAt(currentWindow, 0, 0, '*', '*')) {
-        var tmpWindow = secondWindow;
-        secondWindow = currentWindow;
-        currentWindow = tmpWindow;
-    }
-
-    if (isWindowAt(currentWindow, '*', '*', '*', 1) &&
-        isWindowAt(secondWindow, '*', 0, '*', 1)) {
-        // Case split vertical
-        if (isWindowAt(currentWindow, '*', '*', 1/2, '*') &&
-            isWindowAt(secondWindow, 1/2, '*', 1/2, '*')) {
-            // Make left window wider
-            moveWindowAt(currentWindow, 0, 0, 2/3, 1);
-            moveWindowAt(secondWindow, 2/3, 0, 1/3, 1);
-        } else if (isWindowAt(currentWindow, '*', '*', 2/3, '*') &&
-                   isWindowAtWithPrecision(secondWindow, [2/3], ['*'], [1/3, biggerTolerancy], ['*'])) {
-            // Make left window narrower
-            moveWindowAt(currentWindow, 0, 0, 1/3, 1);
-            moveWindowAt(secondWindow, 1/3, 0, 2/3, 1);
-        } else if (isWindowAtWithPrecision(currentWindow, ['*'], ['*'], [1/3, biggerTolerancy], ['*']) &&
-                   isWindowAt(secondWindow, 1/3, '*', 2/3, '*')) {
-            // Make two windows equally wide
-            moveWindowAt(currentWindow, 0, 0, 1/2, 1);
-            moveWindowAt(secondWindow, 1/2, 0, 1/2, 1);
-        }
-
-    } else if (isWindowAt(currentWindow, '*', '*', 1, '*') &&
-               isWindowAt(secondWindow, 0, '*', 1, '*')) {
-        // Case split horizontal
-        if (isWindowAt(currentWindow, '*', '*', '*', 1/2) &&
-            isWindowAt(secondWindow, '*', 1/2, '*', 1/2)) {
-            // Make top window taller
-            moveWindowAt(currentWindow, 0, 0, 1, 2/3);
-            moveWindowAt(secondWindow, 0, 2/3, 1, 1/3);
-        } else if (isWindowAt(currentWindow, '*', '*', '*', 2/3) &&
-                   isWindowAtWithPrecision(secondWindow, ['*'], [2/3], ['*'], [1/3, biggerTolerancy])) {
-            // Make top window shorter
-            moveWindowAt(currentWindow, 0, 0, 1, 1/3);
-            moveWindowAt(secondWindow, 0, 1/3, 1, 2/3);
-        } else if (isWindowAtWithPrecision(currentWindow, ['*'], ['*'], ['*'], [1/3, biggerTolerancy]) &&
-                   isWindowAt(secondWindow, '*', 1/3, '*', 2/3)) {
-            // Make two windows equally tall
-            moveWindowAt(currentWindow, 0, 0, 1, 1/2);
-            moveWindowAt(secondWindow, 0, 1/2, 1, 1/2);
-        }
-    }
-}
-
-// End of advanced functions
-// _________________________
 
 // Move
 load("move");
 
 // Throw
 load("throw");
+
+// tile two windows
+load("tile2windows");

@@ -52,12 +52,12 @@ var moveCorner = slate.operation("chain", {
 // ________
 
 slate.bindAll({
-    "s:ctrl;cmd" : moveLeft,
-    "d:ctrl;cmd" : moveDown,
-    "e:ctrl;cmd" : moveUp,
-    "f:ctrl;cmd" : moveRight,
-    "c:ctrl;cmd" : moveCenter,
-    "v:ctrl;cmd" : moveCorner,
+    "s:ctrl;cmd"          : moveLeft,
+    "d:ctrl;cmd"          : moveDown,
+    "e:ctrl;cmd"          : moveUp,
+    "f:ctrl;cmd"          : moveRight,
+    "c:ctrl;cmd"          : moveCenter,
+    "v:ctrl;cmd"          : moveCorner,
 
     // Modal bindings
     "s:m;ctrl;cmd:toggle" : moveLeft,

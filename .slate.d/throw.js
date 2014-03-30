@@ -2,18 +2,18 @@
 // ________
 
 slate.bindAll({
-    "a:ctrl;cmd"      : throwToPreviousScreen,
-    "z:ctrl;cmd"      : throwToNextScreen,
-    "1:ctrl;cmd"      : throwToFirstScreen,
-    "2:ctrl;cmd"      : throwToSecondScreen,
-    "3:ctrl;cmd"      : throwToThirdScreen,
+    "a:ctrl;cmd"          : throwToPreviousScreen,
+    "z:ctrl;cmd"          : throwToNextScreen,
+    "1:ctrl;cmd"          : throwToFirstScreen,
+    "2:ctrl;cmd"          : throwToSecondScreen,
+    "3:ctrl;cmd"          : throwToThirdScreen,
 
     // Modal bindings
-    "a:m;ctrl;cmd:toggle"      : throwToPreviousScreen,
-    "z:m;ctrl;cmd:toggle"      : throwToNextScreen,
-    "1:m;ctrl;cmd:toggle"      : throwToFirstScreen,
-    "2:m;ctrl;cmd:toggle"      : throwToSecondScreen,
-    "3:m;ctrl;cmd:toggle"      : throwToThirdScreen,
+    "a:m;ctrl;cmd:toggle" : throwToPreviousScreen,
+    "z:m;ctrl;cmd:toggle" : throwToNextScreen,
+    "1:m;ctrl;cmd:toggle" : throwToFirstScreen,
+    "2:m;ctrl;cmd:toggle" : throwToSecondScreen,
+    "3:m;ctrl;cmd:toggle" : throwToThirdScreen,
 });
 
 // End of bindings
