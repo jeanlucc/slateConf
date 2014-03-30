@@ -43,6 +43,8 @@ function throwToPreviousScreen()
 {
     // Get previous screen
     var previousId = (slate.screen().id() - 1) % slate.screenCount();
+    // Correction for js negative modulo.
+    previousId = (previousId + slate.screenCount()) % slate.screenCount();
     var screen = slate.screenForRef(previousId);
 
     throwToScreen(screen);
