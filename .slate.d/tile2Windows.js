@@ -1,3 +1,10 @@
+/**
+ * This file uses experimental results so it may not fonction
+ * properly. If you find a way to compare two windows instead of
+ * suppose an order in the eachApp() and eachWindow() methods please
+ * let me know at jean.luc.colombier@gmail.com
+ */
+
 // Bindings
 // ________
 
