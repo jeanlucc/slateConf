@@ -32,10 +32,6 @@ var editor    = '';
 var ide       = '';
 var navigator = 'Safari';
 
-// Monitor
-var mon_laptop = "0";
-var mon_extern = "1";
-
 // congfig
 // hint does not work properly on snow leopard (10.6.8)
 var my_hint = slate.operation("hint", {
@@ -43,8 +39,8 @@ var my_hint = slate.operation("hint", {
 });
 var my_grid = slate.operation("grid", {
     "grids" : {
-        mon_laptop : {"width" : 12, "height" : 12},
-        mon_extern : {"width" : 12, "height" : 12}
+        "0" : {"width" : 6, "height" : 6},
+        "1" : {"width" : 6, "height" : 6},
     },
     "padding" : 2
 });
@@ -55,7 +51,7 @@ var focus_down      = slate.operation("focus", {"direction" : "down"});
 var focus_up        = slate.operation("focus", {"direction" : "up"});
 var focus_right     = slate.operation("focus", {"direction" : "right"});
 
-var focus_behind    = slate.operation("focus", {"direction" : "behind"});
+var focus_behind     = slate.operation("focus", {"direction" : "behind"});
 
 var focus_terminal  = slate.operation("focus", {"app" : terminal});
 var focus_editor    = slate.operation("focus", {"app" : editor});
@@ -119,6 +115,7 @@ load("common")
 load("move");
 load("throw");
 load("tile2windows");
+load("focusLoop");
 
 // End of load
 // ___________

@@ -207,3 +207,23 @@ function getScreenRelativeWindowPosition(window)
 
     return new Array(x, y, w, h);
 }
+
+/**
+ * Returns the number of windows currently accessible.
+ */
+function windowsCount()
+{
+    var screen = slate.screen();
+    var numberOfWindowsOnCurrentScreen = 0;
+    slate.eachApp(function(app) {
+        app.eachWindow(function(window) {
+            if (window != undefined &&
+                window.title() != "" &&
+                window.screen().id() === screen.id()) {
+                numberOfWindowsOnCurrentScreen += 1;
+            }
+        });
+    });
+
+    return numberOfWindowsOnCurrentScreen;
+}
