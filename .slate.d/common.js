@@ -163,29 +163,6 @@ function getMoveOperation(x, y, w, h, screen)
 }
 
 /**
- * Returns another window on the same screen than the window passed
- * in parameter. Returns null if the functions fails.
- */
-function getSecondWindow(currentWindow)
-{
-    var secondWindow = null;
-    var screen = currentWindow.screen();
-    var numberOfTreatedWindowsOnCurrentScreen = 0;
-    slate.eachApp(function(app) {
-        app.eachWindow(function(window) {
-            if (window != undefined && window.title() != "" && window.screen().id() === screen.id()) {
-                numberOfTreatedWindowsOnCurrentScreen += 1;
-                if (numberOfTreatedWindowsOnCurrentScreen == 2) {
-                    secondWindow = window;
-                }
-            }
-        });
-    });
-
-    return secondWindow;
-}
-
-/**
  * Returns an array of 4 floats between 0 and 1 or undefined in case
  * of failure. The two firsts give the coordinate of the window
  * relatively to the screen, (0, 0) means at top-left and (1, 1) at
@@ -206,24 +183,4 @@ function getScreenRelativeWindowPosition(window)
     var h = window.rect().height / screen.visibleRect().height;
 
     return new Array(x, y, w, h);
-}
-
-/**
- * Returns the number of windows currently accessible.
- */
-function windowsCount()
-{
-    var screen = slate.screen();
-    var numberOfWindowsOnCurrentScreen = 0;
-    slate.eachApp(function(app) {
-        app.eachWindow(function(window) {
-            if (window != undefined &&
-                window.title() != "" &&
-                window.screen().id() === screen.id()) {
-                numberOfWindowsOnCurrentScreen += 1;
-            }
-        });
-    });
-
-    return numberOfWindowsOnCurrentScreen;
 }

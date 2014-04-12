@@ -22,6 +22,35 @@ slate.bindAll({
 // End of bindings
 // _______________
 
+// Util
+// ____
+
+/**
+ * Returns another window on the same screen than the window passed
+ * in parameter. Returns null if the functions fails.
+ */
+function getSecondWindow(currentWindow)
+{
+    var secondWindow = null;
+    var screen = currentWindow.screen();
+    var numberOfTreatedWindowsOnCurrentScreen = 0;
+    slate.eachApp(function(app) {
+        app.eachWindow(function(window) {
+            if (window != undefined && window.title() != "" && window.screen().id() === screen.id()) {
+                numberOfTreatedWindowsOnCurrentScreen += 1;
+                if (numberOfTreatedWindowsOnCurrentScreen == 2) {
+                    secondWindow = window;
+                }
+            }
+        });
+    });
+
+    return secondWindow;
+}
+
+// End of util
+// ___________
+
 /**
  * Inverts the position of two windows of the current monitor. The
  * current window is the first window and the second is undefined thus

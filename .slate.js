@@ -116,6 +116,7 @@ load("move");
 load("throw");
 load("tile2windows");
 load("focusLoop");
+load("betterFocus");
 
 // End of load
 // ___________

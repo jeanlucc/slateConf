@@ -10,6 +10,32 @@ slate.bindAll({
 // End of bindings
 // _______________
 
+// Util
+// ____
+
+/**
+ * Returns the number of windows currently accessible.
+ */
+function windowsCount()
+{
+    var screen = slate.screen();
+    var numberOfWindowsOnCurrentScreen = 0;
+    slate.eachApp(function(app) {
+        app.eachWindow(function(window) {
+            if (window != undefined &&
+                window.title() != "" &&
+                window.screen().id() === screen.id()) {
+                numberOfWindowsOnCurrentScreen += 1;
+            }
+        });
+    });
+
+    return numberOfWindowsOnCurrentScreen;
+}
+
+// End of util
+// ___________
+
 // The list of windows of the current screen
 var windows;
 // The current index in windows
