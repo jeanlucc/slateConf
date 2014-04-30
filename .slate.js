@@ -46,10 +46,10 @@ var my_grid = slate.operation("grid", {
 });
 
 // Focus
-var focus_left      = slate.operation("focus", {"direction" : "left"});
-var focus_down      = slate.operation("focus", {"direction" : "down"});
-var focus_up        = slate.operation("focus", {"direction" : "up"});
-var focus_right     = slate.operation("focus", {"direction" : "right"});
+// var focus_left      = slate.operation("focus", {"direction" : "left"});
+// var focus_down      = slate.operation("focus", {"direction" : "down"});
+// var focus_up        = slate.operation("focus", {"direction" : "up"});
+// var focus_right     = slate.operation("focus", {"direction" : "right"});
 
 var focus_behind     = slate.operation("focus", {"direction" : "behind"});
 
@@ -67,10 +67,10 @@ var focus_navigator = slate.operation("focus", {"app" : navigator});
 slate.bindAll({
     // normal bindings
     // focus
-    "left:ctrl;cmd"   : focus_left,
-    "down:ctrl;cmd"   : focus_down,
-    "up:ctrl;cmd"     : focus_up,
-    "right:ctrl;cmd"  : focus_right,
+    // "left:ctrl;cmd"   : focus_left,
+    // "down:ctrl;cmd"   : focus_down,
+    // "up:ctrl;cmd"     : focus_up,
+    // "right:ctrl;cmd"  : focus_right,
     "return:ctrl;cmd" : focus_behind,
     "j:ctrl;cmd"      : focus_terminal,
     "k:ctrl;cmd"      : focus_editor,
@@ -82,10 +82,10 @@ slate.bindAll({
 
     // Modal bindings
     // focus
-    "left:m;ctrl;cmd:toggle"   : focus_left,
-    "down:m;ctrl;cmd:toggle"   : focus_down,
-    "up:m;ctrl;cmd:toggle"     : focus_up,
-    "right:m;ctrl;cmd:toggle"  : focus_right,
+    // "left:m;ctrl;cmd:toggle"   : focus_left,
+    // "down:m;ctrl;cmd:toggle"   : focus_down,
+    // "up:m;ctrl;cmd:toggle"     : focus_up,
+    // "right:m;ctrl;cmd:toggle"  : focus_right,
     "return:m;ctrl;cmd:toggle" : focus_behind,
     "j:m;ctrl;cmd:toggle"      : focus_terminal,
     "k:m;ctrl;cmd:toggle"      : focus_editor,

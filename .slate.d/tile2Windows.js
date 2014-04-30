@@ -36,7 +36,7 @@ function getSecondWindow(currentWindow)
     var numberOfTreatedWindowsOnCurrentScreen = 0;
     slate.eachApp(function(app) {
         app.eachWindow(function(window) {
-            if (window != undefined && window.title() != "" && window.screen().id() === screen.id()) {
+            if (undefined != window && '' != window.title() && window.screen().id() === screen.id()) {
                 numberOfTreatedWindowsOnCurrentScreen += 1;
                 if (numberOfTreatedWindowsOnCurrentScreen == 2) {
                     secondWindow = window;
