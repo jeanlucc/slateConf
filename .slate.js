@@ -27,7 +27,7 @@ slate.configAll({
 // _______
 
 // Apps
-var terminal  = 'iTerm';
+var terminal  = 'iTerm2';
 var editor    = '';
 var ide       = '';
 var navigator = 'Safari';
