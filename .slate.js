@@ -26,12 +26,6 @@ slate.configAll({
 // Aliases
 // _______
 
-// Apps
-var terminal  = 'iTerm2';
-var editor    = '';
-var ide       = '';
-var navigator = 'Safari';
-
 // congfig
 // hint does not work properly on snow leopard (10.6.8)
 var my_hint = slate.operation("hint", {
@@ -53,11 +47,6 @@ var my_grid = slate.operation("grid", {
 
 var focus_behind     = slate.operation("focus", {"direction" : "behind"});
 
-var focus_terminal  = slate.operation("focus", {"app" : terminal});
-var focus_editor    = slate.operation("focus", {"app" : editor});
-var focus_ide       = slate.operation("focus", {"app" : ide});
-var focus_navigator = slate.operation("focus", {"app" : navigator});
-
 // End of aliases
 // ______________
 
@@ -72,10 +61,6 @@ slate.bindAll({
     // "up:ctrl;cmd"     : focus_up,
     // "right:ctrl;cmd"  : focus_right,
     "return:ctrl;cmd" : focus_behind,
-    "j:ctrl;cmd"      : focus_terminal,
-    "k:ctrl;cmd"      : focus_editor,
-    "l:ctrl;cmd"      : focus_ide,
-    "n:ctrl;cmd"      : focus_navigator,
     // hints and grid
     "h:ctrl;cmd"      : my_hint,
     "g:ctrl;cmd"      : my_grid,
@@ -87,10 +72,6 @@ slate.bindAll({
     // "up:m;ctrl;cmd:toggle"     : focus_up,
     // "right:m;ctrl;cmd:toggle"  : focus_right,
     "return:m;ctrl;cmd:toggle" : focus_behind,
-    "j:m;ctrl;cmd:toggle"      : focus_terminal,
-    "k:m;ctrl;cmd:toggle"      : focus_editor,
-    "l:m;ctrl;cmd:toggle"      : focus_ide,
-    "n:m;ctrl;cmd:toggle"      : focus_navigator,
 });
 
 // End of bindings
