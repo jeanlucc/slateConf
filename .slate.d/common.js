@@ -10,7 +10,7 @@
  */
 function isWindowAt(window, x, y, w, h)
 {
-    var precision = 1;
+    var precision = 2;
     return isWindowAtWithPrecision(
         window,
         [x, precision, precision],
